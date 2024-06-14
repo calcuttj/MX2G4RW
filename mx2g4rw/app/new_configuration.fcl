@@ -1,7 +1,7 @@
 ## Maybe just make it separate Materials? No real need for it to be in a parameter set
 MaterialSets: {
   LAr: {
-    Name: "liquidArgon" # Need to be the same as the edep-sim config
+    Name: "LAr" #"liquidArgon" # Need to be the same as the edep-sim config
     Density: 1.390 # Standardize this
     Components: [
       {
@@ -17,25 +17,48 @@ PiPlusReweight: {
 
   Name: "PiPlusReweight"
   PDG: 211
-  Material: @local::Materials.LAr
+  Material: @local::MaterialSets.LAr
   FracsFile: "Geant4ReweightInput/LAr_PiPlus_cascade_0_9000.root"
   ParameterSet: [
     { 
       Cut: "reac"
       Name: "fReac"
       Range: [000., 2000.]
+      Nominal: 1.
+      Sigma: 0
     },
     { 
       Cut: "abs"
       Name: "fAbs"
       Range: [000., 2000.]
+      Nominal: 1.
+      Sigma: 0
+    }
+  ]
+
+}
+
+ProtonReweight: {
+
+  Name: "ProtonReweight"
+  PDG: 2212
+  Material: @local::MaterialSets.LAr
+  FracsFile: "Geant4ReweightInput/proton.root"
+  ParameterSet: [
+    { 
+      Cut: "reac"
+      Name: "fReac"
+      Range: [000., 2000.]
+      Nominal: 1.
+      Sigma: 0
     }
   ]
 
 }
 
 Reweights: [
-  @local::PiPlusReweight
+  @local::PiPlusReweight,
+  @local::ProtonReweight
 ]
 
 Materials: [

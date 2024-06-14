@@ -12,20 +12,50 @@
 
 namespace mx2g4rw {
 
-using PartMat = std::pair<int, std::string>;
-using ParameterMap = std::map<PartMat, std::vector<fhicl::ParameterSet>>;
-using ReweighterMap = std::map<PartMat, G4MultiReweighter*>;
-using FracsFileMap = std::map<PartMat, TFile*>;
+using PartMat_t = std::pair<int, std::string>;
+using ParameterMap_t = std::map<PartMat_t, std::vector<fhicl::ParameterSet>>;
+using ReweighterMap_t = std::map<PartMat_t, G4MultiReweighter*>;
+using FracsFileMap_t = std::map<PartMat_t, TFile*>;
+using NParMap_t = std::map<PartMat_t, size_t>;
+
+using ParNameMap_t = std::map<PartMat_t, std::vector<std::string>>;
 
 class ReweightSuite {
  public:
   ReweightSuite(fhicl::ParameterSet & pset);
   ~ReweightSuite();
+
+  bool CheckPDG(int pdg);
+  bool CheckMaterial(const std::string & material);
+
+  const std::vector<PartMat_t> & GetAllPartMats() {
+    return fPartMats;
+  };
+
+  const ParNameMap_t & GetParameterNames() {
+    return fParameterNames;
+  };
+
+  std::vector<double> Scan(
+      G4ReweightTraj & traj,
+      int pdg, std::string material, size_t param_number,
+      size_t nsteps=20, double start=.1, double end=2.);
+  std::vector<double> Scan(
+      G4ReweightTraj & traj,
+      PartMat_t part_mat, size_t param_number,
+      size_t nsteps=20, double start=.1, double end=2.);
+  size_t GetNPars(PartMat_t part_mat) {
+    //TODO -- throw exception
+    return fNParameters.at(part_mat);
+  };
  private:
   G4ReweightManager * fManager;
-  ReweighterMap fReweighters;
-  FracsFileMap fFracsFiles;
-  ParameterMap fParameters;
+  ReweighterMap_t fReweighters;
+  FracsFileMap_t fFracsFiles;
+  ParameterMap_t fParameters;
+  NParMap_t fNParameters;
+  ParNameMap_t fParameterNames;
+  std::vector<PartMat_t> fPartMats;
 };
 }
 

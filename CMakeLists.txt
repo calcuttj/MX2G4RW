@@ -12,7 +12,8 @@
 #  make package (builds distribution tarfile)
 # ======================================================================
 
-cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
+#cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.18.2 FATAL_ERROR)
 
 project(mx2g4rw VERSION 00.00.00)
 
