@@ -25,14 +25,14 @@ class ReweightSuite {
   ReweightSuite(fhicl::ParameterSet & pset);
   ~ReweightSuite();
 
-  bool CheckPDG(int pdg);
-  bool CheckMaterial(const std::string & material);
+  bool CheckPDG(int pdg) const;
+  bool CheckMaterial(const std::string & material) const;
 
-  const std::vector<PartMat_t> & GetAllPartMats() {
+  const std::vector<PartMat_t> & GetAllPartMats() const {
     return fPartMats;
   };
 
-  const ParNameMap_t & GetParameterNames() {
+  const ParNameMap_t & GetParameterNames() const {
     return fParameterNames;
   };
 
@@ -44,7 +44,7 @@ class ReweightSuite {
       G4ReweightTraj & traj,
       PartMat_t part_mat, size_t param_number,
       size_t nsteps=20, double start=.1, double end=2.);
-  size_t GetNPars(PartMat_t part_mat) {
+  size_t GetNPars(PartMat_t part_mat) const {
     //TODO -- throw exception
     return fNParameters.at(part_mat);
   };

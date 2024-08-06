@@ -52,7 +52,7 @@ ReweightSuite::ReweightSuite(fhicl::ParameterSet & pset) {
   }
 }
 
-bool ReweightSuite::CheckMaterial(const std::string & material) {
+bool ReweightSuite::CheckMaterial(const std::string & material) const {
   return (
     std::find_if(
       fReweighters.begin(), fReweighters.end(),
@@ -63,7 +63,7 @@ bool ReweightSuite::CheckMaterial(const std::string & material) {
   );
 }
 
-bool ReweightSuite::CheckPDG(int pdg) {
+bool ReweightSuite::CheckPDG(int pdg) const {
   return (
     std::find_if(
       fReweighters.begin(), fReweighters.end(),

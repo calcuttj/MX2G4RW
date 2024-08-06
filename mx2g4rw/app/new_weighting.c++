@@ -209,6 +209,24 @@ std::string MakeBranchName(PDGMatParam_t pdg_mat_param) {
           std::get<2>(pdg_mat_param));
 };
 
+
+void ResetBranches(WeightMap_t & weight_map,
+                   IDMap_t & id_map,
+                  const mx2g4rw::ReweightSuite & reweight_suite) {
+  for (const auto & [part_mat, par_names] :
+       reweight_suite.GetParameterNames()) {
+    int pdg = part_mat.first;
+    auto material = part_mat.second;
+
+    for (const auto & name : par_names) {
+      auto part_mat_param = std::make_tuple(pdg, material, name);
+      weight_map[part_mat_param].clear();
+      id_map[part_mat_param].clear();
+    }
+  }
+
+};
+
 int main(int argc, char ** argv) {
   namespace po = boost::program_options;
 
@@ -352,8 +370,11 @@ int main(int argc, char ** argv) {
       const auto & traj = event->Trajectories[i];
 
       //Skip the ones we don't care about and primaries (id == -1)
-      if (!IsValidChild(traj.GetPDGCode()) || traj.GetParentId() == -1)
+      if (!IsValidChild(traj.GetPDGCode()) || traj.GetParentId() == -1) {
+        std::cout << "Skipping " << traj.GetPDGCode() << " from " << traj.GetParentId() << std::endl;
         continue;
+      }
+      std::cout << "Adding " << traj.GetPDGCode() << " from " << traj.GetParentId() << std::endl;
       ChildrenMap[traj.GetParentId()].push_back(&traj);
     }
 
@@ -481,7 +502,8 @@ int main(int argc, char ** argv) {
                        " " << reweightable_traj.GetPDG() << " " <<
                        reweightable_traj.GetParID() << std::endl;
           //If this is an interaction, add the children 
-          if (set_interaction) {
+          if (set_interaction &&
+              (ChildrenMap.find(traj.GetTrackId()) != ChildrenMap.end())) {
             const auto & children = ChildrenMap.at(traj.GetTrackId());
             for (const auto & child : children) {
               reweightable_traj.AddChild(MakeChild(child));
@@ -789,7 +811,10 @@ int main(int argc, char ** argv) {
   //  ntotal += weight;
 
 
+    //Save the results
     outtree.Fill();
+    //Clear the branches
+    ResetBranches(weight_map, id_map, reweight_suite);
   }
   outtree.Write();
   fOut.Close();
