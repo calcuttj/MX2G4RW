@@ -283,6 +283,7 @@ int main(int argc, char ** argv) {
   auto fcl_pars = mx2g4rw::MakeFCLPars(fcl_file);
 
   mx2g4rw::ReweightSuite reweight_suite(fcl_pars);
+  std::cout << "Made suite" << std::endl;
 
   //Inputfile 
   TFile f(input_file.c_str(), "open");
@@ -319,6 +320,15 @@ int main(int argc, char ** argv) {
                      &id_map[part_mat_param]);
     }
   }
+
+
+  //TTree test_tree("test_tree", "");
+  std::vector<double> out_len;
+  std::vector<int> out_pdg;
+  std::vector<int> out_id;
+  outtree.Branch("len", &out_len);
+  outtree.Branch("pdg", &out_pdg);
+  outtree.Branch("id", &out_id);
 
   //double weight = 1., old_weight = 1.;
   //double out_len = 0.;
@@ -361,6 +371,9 @@ int main(int argc, char ** argv) {
   for (int i = 0; i < nentries; ++i) {
     if (!(i%1000)) std::cout << i << "/" << nentries << "\r";
     std::cout << "############" << std::endl;
+    out_pdg.clear();
+    out_id.clear();
+    out_len.clear();
     tree->GetEntry(i);
 
     //Build-up map to children, we'll need to look up the 
@@ -368,6 +381,18 @@ int main(int argc, char ** argv) {
     std::map<int, std::vector<const TG4Trajectory *>> ChildrenMap;
     for (size_t i = 0; i < event->Trajectories.size(); ++i) {
       const auto & traj = event->Trajectories[i];
+      out_pdg.push_back(traj.GetPDGCode());
+      out_id.push_back(traj.GetTrackId());
+      out_len.push_back(0.);
+      size_t npts = traj.Points.size();
+      for (size_t j = 1; j < npts; ++j) {
+        auto & pt1 = traj.Points[j];
+        auto & pt0 = traj.Points[j-1];
+        auto diff = pt1.GetPosition() - pt0.GetPosition();
+        out_len.back() += sqrt(
+          diff.X()*diff.X() + diff.Y()*diff.Y() + diff.Z()*diff.Z()
+        );
+      }
 
       //Skip the ones we don't care about and primaries (id == -1)
       if (!IsValidChild(traj.GetPDGCode()) || traj.GetParentId() == -1) {
@@ -813,10 +838,12 @@ int main(int argc, char ** argv) {
 
     //Save the results
     outtree.Fill();
+    //test_tree.Fill();
     //Clear the branches
     ResetBranches(weight_map, id_map, reweight_suite);
   }
   outtree.Write();
+  //test_tree.Write();
   fOut.Close();
 
   f.Close();

@@ -83,7 +83,7 @@ std::vector<double> ReweightSuite::Scan(
   //TODO -- check param_number, start < end etc.
   auto * the_reweighter = fReweighters[part_mat];
   size_t npars = fNParameters[part_mat];
-  double delta = (end - start)/nsteps;
+  double delta = (end - start)/(nsteps-1);
 
   //If nsteps == 0, just return 1 weight at start
   if (nsteps == 0) {
