@@ -64,3 +64,38 @@ This produces the following image. Several features are evident: 1) by increasin
 \* This is true to within a few percent. Any inaccuracies can be caused by i.e. the post-simulation merging of steps in the edep-sim output. 
 
 ![example_len](docs/images/example_len.png)
+
+
+
+## Number of Pions
+This time, I want to draw the number of pions produced within the event. In order to encompass the effect of changing the cross section on all of the pions in the event, one must multiply the weights from every trajectory together. 
+
+<pre >
+  f = RT.TFile.Open(args.i);
+  t = f.Get("tree")
+  
+  #Make some hists for storage
+  hNom = RT.TH1D("hNom", "", 15, 0, 15) 
+  hUp = RT.TH1D("hUp", "", 15, 0, 15) 
+  hDown = RT.TH1D("hDown", "", 15, 0, 15);
+
+  for e in t:
+    #For each entry, we have to loop over all of the pions in the event 
+    #and combine all of their weights
+    weight_up = 1.
+    weight_down = 1.
+    for wv in e.piplus_LAr_fReac_weights:
+      weight_up *= wv[14]
+      weight_down *= wv[4]
+
+    #Count the number of piplus 
+    npions = [i for i in e.pdg].count(211)
+
+    #Weight accordingly
+    hUp.Fill(npions, weight_up);
+    hNom.Fill(npions);
+    hDown.Fill(npions, weight_down);
+
+</pre>
+
+![example_pdg](docs/images/npions.png) ![example_pdg_log](docs/images/npions_log.png)
