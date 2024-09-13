@@ -23,3 +23,11 @@ The processing can be run on a file produced by edep-sim.
 <pre>
   new_weighting -c reweight.fcl -i [input].root -o [outputname].root
 </pre>
+
+
+# Output Format
+The output of the weighting routine is a file with a single weight table stored as a TTree. Each entry in the TTree/weighting table corresponds to an event simulated within edep-sim. The weights are separated in several branches (determined by configuration) and are separated according to
+
+1) The particle species in question (i.e. pi+, proton)
+2) The target material in which we are weighting (i.e. LAr, FR4)
+3) The 'parameter' of interest (a component of the total cross section within some defined momentum range).
