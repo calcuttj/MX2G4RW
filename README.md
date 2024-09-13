@@ -1,6 +1,6 @@
 # MX2G4RW
 
-Repository to start developing utils for using Geant4Reweight for studies at the MINERvA + 2x2 ND prototype.
+Repository to start developing utils for using Geant4Reweight for studies at the MINERvA + 2x2 ND prototype.I'm ready whenever you are to 
 
 # Setting up
 This code can be ran easily on a dunegpvm. The required packages are 
@@ -37,3 +37,6 @@ The branch names are of the form "{particle}\_{material}\_{parameter}\_weights",
 In addition to the 2D weight branch is a branch holding a vector of the relevant trajectory IDs corresponding to a given weight branch. It will have the name "{particle}\_{material}\_{parameter}\_IDs" and the particle, material, and parameter will match some weight branch. The first index of the ID vector will correspond to the first index of the weight vector event-by-event.
 
 # Demonstration of Applying Weights
+For this demonstration, several 'observables' branches have been added to the output tree. It uses an edep-sim simulation of a pion gun generated in a single direction within a homogenous block of LAr.
+
+## Primary Pion Length
