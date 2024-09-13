@@ -40,7 +40,7 @@ In addition to the 2D weight branch is a branch holding a vector of the relevant
 For this demonstration, several 'observables' branches have been added to the output tree. It uses an edep-sim simulation of a pion gun generated in a single direction within a homogenous block of LAr.
 
 ## Primary Pion Length
-Below is a snippet to draw distributions of the primary pion length using the branches stored in the weight table "tree". Note that the specific access of the primary pions using the 0th index only works because of the specific simulation produced by a pion gun (thus the primary pion is defined to be the 0th trajectory in the tree). The weighting routines were configured to vary the total piplus cross section in LAr by a factor of 0.1 -- 2.0 (separated by 0.1). 
+Below is a snippet to draw distributions of the primary pion length using the branches stored in the weight table "tree". Note that the specific access of the primary pions using the 0th index only works because of the specific simulation produced by a pion gun (thus the primary pion is defined to be the 0th trajectory in the tree). The weighting routines were configured to vary the total piplus cross section in LAr by a factor of 0.1 -- 2.0 (separated by 0.1). Thus, the 0th element in the weight vector's 2nd dimension coincides to a factor of 0.1, element 4 is 0.5, element 9 is 1.0, element 14 is 1.5, etc.
 
 <pre>
   //Draw the length (divide by 10 to fix units mm --> cm
@@ -58,3 +58,9 @@ Below is a snippet to draw distributions of the primary pion length using the br
   //Weighted down by 50%
   tree->Draw("len[0]/10.>>hDown", "piplus_LAr_fReac_weights[0][4]");
 </pre>
+
+This produces the following image. Several features are evident: 1) by increasing the cross section (red), the pions tend to interact earlier in their traversal through the LAr. The opposite is true when decreasing the cross section. 2) The normalization remains the same.* This reflects the fact that we are not changing the number of primary particles in our simulation, we are simply changing how they behave. This is an important concept to start thinking about, especially when considering more complicated demonstrations. When we start to weight over multiple trajectories in the event, a given distribution's normalization could in fact change when weighting because we might increase or decrease the chance for particles to be created by the model we are varying (as opposed to the particle gun). 
+
+\* This is true to within a few percent. Any inaccuracies are caused by i.e. the post-simulation merging of steps in the edep-sim output. 
+
+![example_len](docs/images/example_len.png)
