@@ -31,3 +31,5 @@ The output of the weighting routine is a file with a single weight table stored 
 1) The particle species in question (i.e. pi+, proton)
 2) The target material in which we are weighting (i.e. LAr, FR4)
 3) The 'parameter' of interest (a component of the total cross section within some defined momentum range).
+
+The branch names are of the form "{particle}\_{material}\_{parameter}\_weights", and is a 2D vector of doubles in which the first index corresponds to a trajectory within the edep-sim event, and the second corresponds to several parameter values over which we have "scanned" the weighting routines. Note: only the trajectories which match the particle species and which travelled through the target material during edep-sim are saved in each vector. That way, weights for protons will not be saved in a branch representing a change to some pion cross section, nor will weights be saved for a pi+ trajectory which travelled only through FR4 when the target material was LAr. 
