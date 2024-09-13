@@ -40,3 +40,21 @@ In addition to the 2D weight branch is a branch holding a vector of the relevant
 For this demonstration, several 'observables' branches have been added to the output tree. It uses an edep-sim simulation of a pion gun generated in a single direction within a homogenous block of LAr.
 
 ## Primary Pion Length
+Below is a snippet to draw distributions of the primary pion length using the branches stored in the weight table "tree". Note that the specific access of the primary pions using the 0th index only works because of the specific simulation produced by a pion gun (thus the primary pion is defined to be the 0th trajectory in the tree). The weighting routines were configured to vary the total piplus cross section in LAr by a factor of 0.1 -- 2.0 (separated by 0.1). 
+
+<pre>
+  //Draw the length (divide by 10 to fix units mm --> cm
+  //Use the 1st entry in each vector to correspond to the primary traj
+  //  
+  //NOTE: THIS IS ONLY FOR THIS CASE AND IS ONLY BECAUSE I GENERATED PIONS
+  //SO BE CAREFUL WHEN YOU MAKE YOUR OWN APPLICATION
+
+  //Unweighted
+  tree->Draw("len[0]/10.>>hNom", "");
+
+  //Weighted up by 50% -- 2nd index corresponds to parameter value
+  tree->Draw("len[0]/10.>>hUp", "piplus_LAr_fReac_weights[0][14]");
+
+  //Weighted down by 50%
+  tree->Draw("len[0]/10.>>hDown", "piplus_LAr_fReac_weights[0][4]");
+</pre>
